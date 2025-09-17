@@ -18,7 +18,7 @@ HEALTH_HEALTHY_MIN1 = np.array([0, 101, 51])   # H, S, V
 HEALTH_HEALTHY_MAX1 = np.array([10, 224, 175])
 HEALTH_HEALTHY_MIN2 = np.array([160, 101, 51])
 HEALTH_HEALTHY_MAX2 = np.array([179, 224, 175])
-HEALTH_THRESHOLD = 0.45
+HEALTH_THRESHOLD = 0.6
 
 # 魔力球参数
 MANA_CENTER = (2379, 1301)
@@ -140,6 +140,7 @@ def auto_drink():
 
     try:
         while True:
+            sleep = True
             current_time = time.time()
             save_screenshots = SAVE_SCREENSHOTS and (current_time - LAST_SCREENSHOT_TIME >= SCREENSHOT_INTERVAL)
 
@@ -161,16 +162,19 @@ def auto_drink():
             print(f"魔力颜色: {mana_color_stats}")
 
             if need_health:
+                sleep = False
                 pyautogui.press(HEALTH_POTION_KEY)
                 print(f"喝生命药！当前生命占比: {health_ratio:.2f}")
-                time.sleep(1)
+                time.sleep(0.5)
 
             if need_mana:
+                sleep = False
                 pyautogui.press(MANA_POTION_KEY)
                 print(f"喝魔力药！当前魔力占比: {mana_ratio:.2f}")
                 time.sleep(1)
 
-            time.sleep(CHECK_INTERVAL)
+            if sleep:
+                time.sleep(CHECK_INTERVAL)
 
     except KeyboardInterrupt:
         print("\n程序已停止")
